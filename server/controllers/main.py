@@ -100,6 +100,6 @@ def wiki_wc(search):
   for entry in result['url']:
       urls[entry] = result['url'][entry]
       summaries[entry] = summarize(result['content'][entry])
-      counts[entry] = get_frequencies(result['content'][entry])
+      counts[entry] = get_noun_frequencies(result['content'][entry])
 
   return jsonify(counts=counts,summaries=summaries,urls=urls)
