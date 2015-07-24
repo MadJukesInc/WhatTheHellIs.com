@@ -3,7 +3,7 @@ from flask.ext.login import login_user, logout_user, login_required
 
 from server.extensions import cache
 
-static_results = []
+static_results = {}
 static_results['thing'] = {
     'name': 'thing',
     'description': 'This is the example result'
