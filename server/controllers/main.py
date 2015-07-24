@@ -60,6 +60,22 @@ def wiki(search):
   result = {}
   pages = data['query']['pages']
   for pageID in pages:
-      query = pages[pageID]
-      result[query['title']] = query['extract']
+    query = pages[pageID]
+    result[query['title']] = query['extract']
   return jsonify(result)
+
+
+@main.route(api_namespace + '/wiki/<search>/wc')
+def wiki_wc(search):
+  data = requests.get(wiki_request_uri + search).json()
+  result = {}
+  pages = data['query']['pages']
+  for pageID in pages:
+    query = pages[pageID]
+    result[query['title']] = query['extract']
+
+  counts = {}
+  for entry in result:
+      print result[entry]
+      counts[entry] = get_frequencies(result[entry])
+  return jsonify(counts)
