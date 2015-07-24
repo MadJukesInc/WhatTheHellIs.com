@@ -14,6 +14,7 @@ itsdangerous==0.24
 cssmin==0.2.0
 jsmin==2.1.1
 requests==2.7.0
+textblob==0.9.1
 
 # Testing
 pytest==2.7.0
