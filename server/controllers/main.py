@@ -79,7 +79,7 @@ def summarize(text):
     summarizer.stop_words = get_stop_words(LANGUAGE)
     result = ''
     for sentence in summarizer(parser.document, SENTENCES_COUNT):
-        result += str(sentence)
+        result += str(sentence) + ' '
     return result
 
 # def sortNSplit(unsorted):

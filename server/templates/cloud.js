@@ -16,7 +16,7 @@ $(document).ready(function(e) {
         height: $cloud.parent().innerWidth() / 2,
         width: $cloud.parent().innerWidth() - 100,
     });
-};
+});
 
 $('input').keyup(function(e){
    if(e.keyCode == 13){
