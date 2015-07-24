@@ -53,27 +53,25 @@ wiki_request_uri = 'https://en.wikipedia.org/w/api.php?' \
     'explaintext=&'\
     'titles='
 
+def perform_request(search):
+    data = requests.get(wiki_request_uri + search).json()
+    result = {}
+    pages = data['query']['pages']
+    for pageID in pages:
+        query = pages[pageID]
+        result[query['title']] = query['extract']
+    return result
+
 
 @main.route(api_namespace + '/wiki/<search>')
 def wiki(search):
-  data = requests.get(wiki_request_uri + search).json()
-  result = {}
-  pages = data['query']['pages']
-  for pageID in pages:
-    query = pages[pageID]
-    result[query['title']] = query['extract']
+  result = perform_request(search)
   return jsonify(result)
 
 
 @main.route(api_namespace + '/wiki/<search>/wc')
 def wiki_wc(search):
-  data = requests.get(wiki_request_uri + search).json()
-  result = {}
-  pages = data['query']['pages']
-  for pageID in pages:
-    query = pages[pageID]
-    result[query['title']] = query['extract']
-
+  result = perform_request(search)
   counts = {}
   for entry in result:
       print result[entry]
