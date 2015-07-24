@@ -147,4 +147,9 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+#node modules
+node_modules/
+
+#bower components
+bower_components/
 
