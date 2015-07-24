@@ -19,4 +19,5 @@ def home():
 
 @main.route(api_namespace+'/query/<search>')
 def query(search):
-    return static_results[search]
+    print search
+    return  jsonify(query = search , description = static_results[search])
