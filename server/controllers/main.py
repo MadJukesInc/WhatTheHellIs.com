@@ -26,33 +26,6 @@ api_namespace = '/api/v1'
 SENTENCES_COUNT = 3
 LANGUAGE = "english"
 
-@main.route('/')
-@cache.cached(timeout=1000)
-def home():
-  return render_template('index.html')
-
-
-@main.route(api_namespace + '/query/<search>')
-def query(search):
-  print search
-  return jsonify(query=search, description=static_results[search])
-
-
-@main.route(api_namespace + '/counts/<search>')
-def w_counts(search):
-  return jsonify(
-      query=search,
-      description=static_results[search],
-      counts=get_noun_frequencies(static_results[search]))
-
-
-@main.route(api_namespace + '/np_counts/<search>')
-def np_counts(search):
-  return jsonify(
-      query=search,
-      description=static_results[search],
-      counts=get_frequencies(static_results[search]))
-
 wiki_request_uri = 'https://en.wikipedia.org/w/api.php?' \
     'format=json&'\
     'action=query&'\
@@ -82,6 +55,34 @@ def summarize(text):
         result += str(sentence) + ' '
     return result
 
+@main.route('/')
+@cache.cached(timeout=1000)
+def home():
+  return render_template('index.html')
+
+
+@main.route(api_namespace + '/query/<search>')
+def query(search):
+  print search
+  return jsonify(query=search, description=static_results[search])
+
+
+@main.route(api_namespace + '/counts/<search>')
+def w_counts(search):
+  return jsonify(
+      query=search,
+      description=static_results[search],
+      counts=get_noun_frequencies(static_results[search]))
+
+
+@main.route(api_namespace + '/np_counts/<search>')
+def np_counts(search):
+  return jsonify(
+      query=search,
+      description=static_results[search],
+      counts=get_frequencies(static_results[search]))
+
+
 # def sortNSplit(unsorted):
 #     return sorted(unsorted)
 
@@ -96,8 +97,6 @@ def wiki(search):
 @cross_origin()
 def wiki_wc(search):
   result = perform_request(search)
-  print result
-
   urls = result['url']
   summaries = summarize(result['content'])
   counts = get_noun_frequencies(result['content'])

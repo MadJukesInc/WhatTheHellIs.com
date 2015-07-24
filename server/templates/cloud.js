@@ -29,6 +29,7 @@ var processData = function(res){
     console.log(res);
     generateCloud(blah(res.counts));
     $('#summary').html(res.summaries);
+    $('#linkHere').html('<a href="'+ res.urls + '">' + $('input').val().trim() + '</a>');
 };
 
 var submitQuery = function (e) {
