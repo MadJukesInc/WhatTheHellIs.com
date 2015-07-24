@@ -1,0 +1,19 @@
+{
+  "name": "whatthehellis",
+  "version": "1.0.0",
+  "description": "Website with simple description of various terms",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MadJukesInc/WhatTheHellIs.com.git"
+  },
+  "author": "jwuertz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MadJukesInc/WhatTheHellIs.com/issues"
+  },
+  "homepage": "https://github.com/MadJukesInc/WhatTheHellIs.com#readme"
+}
