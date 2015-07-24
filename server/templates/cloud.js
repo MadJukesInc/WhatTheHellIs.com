@@ -46,10 +46,12 @@ var generateCloud = function(words){
 function blah(list) {
   var result = [];
   for (var key in list) {
-    result.push({
-      text: key,
-      weight: list[key]
-    });
+    if(key!==$('input').val().trim()){
+      result.push({
+        text: key,
+        weight: list[key]
+      });
+    }
   }
   return result;
 }
