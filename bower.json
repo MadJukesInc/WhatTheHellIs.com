@@ -1,0 +1,20 @@
+{
+  "name": "WhatTheHellIs.com",
+  "version": "0.0.0",
+  "homepage": "https://github.com/MadJukesInc/WhatTheHellIs.com",
+  "authors": [
+    "Jason Wuertz [Jason Würtz] <jwuertz@upei.ca>"
+  ],
+  "main": "index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jqcloud2": "~2.0.1"
+  }
+}
