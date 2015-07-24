@@ -1,7 +1,13 @@
 from flask import Blueprint, render_template, flash, request, redirect, url_for, jsonify
 from flask.ext.login import login_user, logout_user, login_required
+from sumy.parsers.plaintext import PlaintextParser
+from sumy.nlp.tokenizers import Tokenizer
+from sumy.summarizers.lsa import LsaSummarizer as Summarizer
+from sumy.nlp.stemmers import Stemmer
+from sumy.utils import get_stop_words
 
 import requests
+import operator
 
 from server.extensions import cache
 from server.frequency import get_frequencies
@@ -16,7 +22,8 @@ static_results['dave'] = u'The Grammar Nazi'
 
 main = Blueprint('main', __name__)
 api_namespace = '/api/v1'
-
+SENTENCES_COUNT = 3
+LANGUAGE = "english"
 
 @main.route('/')
 @cache.cached(timeout=1000)
@@ -55,13 +62,27 @@ wiki_request_uri = 'https://en.wikipedia.org/w/api.php?' \
 
 def perform_request(search):
     data = requests.get(wiki_request_uri + search).json()
-    result = {}
+    content = {}
+    urls = {}
     pages = data['query']['pages']
     for pageID in pages:
         query = pages[pageID]
-        result[query['title']] = query['extract']
+        content[query['title']] = query['extract']
+        urls[query['title']] = 'https://en.wikipedia.org/?curid=' + str(query['pageid'])
+    return {'content':content, 'url': urls}
+
+def summarize(text):
+    parser = PlaintextParser.from_string(text, Tokenizer(LANGUAGE))
+    stemmer = Stemmer(LANGUAGE)
+    summarizer = Summarizer(stemmer)
+    summarizer.stop_words = get_stop_words(LANGUAGE)
+    result = ''
+    for sentence in summarizer(parser.document, SENTENCES_COUNT):
+        result += str(sentence)
     return result
 
+# def sortNSplit(unsorted):
+#     return sorted(unsorted)
 
 @main.route(api_namespace + '/wiki/<search>')
 def wiki(search):
@@ -72,8 +93,13 @@ def wiki(search):
 @main.route(api_namespace + '/wiki/<search>/wc')
 def wiki_wc(search):
   result = perform_request(search)
+  print result
   counts = {}
-  for entry in result:
-      print result[entry]
-      counts[entry] = get_frequencies(result[entry])
-  return jsonify(counts)
+  summaries = {}
+  urls = {}
+  for entry in result['url']:
+      urls[entry] = result['url'][entry]
+      summaries[entry] = summarize(result['content'][entry])
+      counts[entry] = get_frequencies(result['content'][entry])
+
+  return jsonify(counts=counts,summaries=summaries,urls=urls)
