@@ -9,6 +9,7 @@ from sumy.utils import get_stop_words
 import requests
 import operator
 
+from flask.ext.cors import cross_origin
 from server.extensions import cache
 from server.frequency import get_frequencies
 from server.frequency import get_noun_frequencies
@@ -62,14 +63,14 @@ wiki_request_uri = 'https://en.wikipedia.org/w/api.php?' \
 
 def perform_request(search):
     data = requests.get(wiki_request_uri + search).json()
-    content = {}
-    urls = {}
+    content = ''
+    urls = ''
     pages = data['query']['pages']
     for pageID in pages:
         query = pages[pageID]
-        content[query['title']] = query['extract']
-        urls[query['title']] = 'https://en.wikipedia.org/?curid=' + str(query['pageid'])
-    return {'content':content, 'url': urls}
+        content = query['extract']
+        urls = 'https://en.wikipedia.org/?curid=' + str(query['pageid'])
+        return {'content':content, 'url': urls}
 
 def summarize(text):
     parser = PlaintextParser.from_string(text, Tokenizer(LANGUAGE))
@@ -85,21 +86,20 @@ def summarize(text):
 #     return sorted(unsorted)
 
 @main.route(api_namespace + '/wiki/<search>')
+@cross_origin()
 def wiki(search):
   result = perform_request(search)
   return jsonify(result)
 
 
 @main.route(api_namespace + '/wiki/<search>/wc')
+@cross_origin()
 def wiki_wc(search):
   result = perform_request(search)
   print result
-  counts = {}
-  summaries = {}
-  urls = {}
-  for entry in result['url']:
-      urls[entry] = result['url'][entry]
-      summaries[entry] = summarize(result['content'][entry])
-      counts[entry] = get_noun_frequencies(result['content'][entry])
+
+  urls = result['url']
+  summaries = summarize(result['content'])
+  counts = get_noun_frequencies(result['content'])
 
   return jsonify(counts=counts,summaries=summaries,urls=urls)

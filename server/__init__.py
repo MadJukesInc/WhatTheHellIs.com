@@ -6,6 +6,7 @@ __email__ = 'it@garage'
 __version__ = '1.3'
 
 from flask import Flask
+from flask.ext.cors import CORS
 from webassets.loaders import PythonLoader as PythonAssetsLoader
 
 from server.controllers.main import main
@@ -36,7 +37,7 @@ def create_app(object_name, env="prod"):
 
     app.config.from_object(object_name)
     app.config['ENV'] = env
-
+    cors = CORS(app)
     # initialize the cache
     cache.init_app(app)
 
