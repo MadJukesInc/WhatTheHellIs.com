@@ -2,3 +2,10 @@
     border-bottom-style: solid;
     border-width: thin;
 }
+
+borderless-input {
+    border:none;
+    border-bottom-style:solid;
+    border-width:thin;
+    border-radius:0px;
+}
