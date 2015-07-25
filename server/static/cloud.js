@@ -23,6 +23,7 @@ $(document).ready(function(e) {
     },
     /* ... */
   ];
+  $('.ui.dimmer').dimmer('show');
 
   var $cloud = $('#wordCloud');
 
@@ -38,20 +39,22 @@ $(document).ready(function(e) {
     searchFields   : [
       'title'
     ],
+    transition: 'fade',
+    cache: true,
     searchFullText: true,
-    onSelect: function () {
-      console.log('query');
-      submitQuery();
+    onSelect: function (res, result) {
+        $('.ui.dimmer').dimmer('hide');
+      submitQuery(res.title);
     }
   });
 
-  $('.ui.search').keyup(function(e) {
-    if (e.keyCode == 13) {
-      submitQuery();
-      $('.ui.search').search('cancel query');
-    }
-
-  });
+  // $('.ui.search').keyup(function(e) {
+  //   if (e.keyCode == 13) {
+  //     submitQuery();
+  //     $('.ui.search').search('cancel query');
+  //   }
+  //
+  // });
 });
 
 var processData = function(res, status) {
@@ -60,8 +63,9 @@ var processData = function(res, status) {
   $('#linkHere').html('<a href="' + res.urls + '">' + $('.ui.search').search('get value').trim() + '</a>');
 };
 
-var submitQuery = function(e) {
-  var query = $('.ui.search').search('get value').trim().replace(' ', '%20');
+var submitQuery = function(query) {
+  // var query = $('.ui.search').search('get value').trim().replace(' ', '%20');
+  // console.log(query)
   $.get('/api/v1/wiki/' + query + '/wc', processData)
     .fail(function(error) {
       console.log('We have encountered an error'); // or whatever
