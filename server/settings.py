@@ -8,16 +8,16 @@ class Config(object):
 
 class ProdConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///../database.db'
-
-    CACHE_TYPE = 'simple'
+    WTF_CSRF_ENABLED = False
+    CACHE_TYPE = 'null'
 
 
 class DevConfig(Config):
     DEBUG = True
     DEBUG_TB_INTERCEPT_REDIRECTS = False
-
+    SERVER_URL = '0.0.0.0:1337'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///../database.db'
-
+    WTF_CSRF_ENABLED = False
     CACHE_TYPE = 'null'
     ASSETS_DEBUG = True
 
