@@ -73,8 +73,10 @@ def home():
 
 @main.route(api_namespace + '/query/<search>')
 def query(search):
-  print search
-  return jsonify(query=search, description=static_results[search])
+  url = 'https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&srsearch=' + search + '&utf8=&rawcontinue='
+  result = requests.get(url).json()
+  temp = result['query']['search']
+  return jsonify(results=temp)
 
 
 @main.route(api_namespace + '/counts/<search>')

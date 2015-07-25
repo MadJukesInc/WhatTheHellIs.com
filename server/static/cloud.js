@@ -31,22 +31,37 @@ $(document).ready(function(e) {
     width: $cloud.parent().innerWidth() - 100,
   });
 
-
-  $('#queryInput').keyup(function(e) {
-    if (e.keyCode == 13) {
+  $('.ui.search').search({
+    apiSettings: {
+      url: 'api/v1/query/{query}'
+    },
+    searchFields   : [
+      'title'
+    ],
+    searchFullText: true,
+    onSelect: function () {
+      console.log('query');
       submitQuery();
     }
+  });
+
+  $('.ui.search').keyup(function(e) {
+    if (e.keyCode == 13) {
+      submitQuery();
+      $('.ui.search').search('cancel query');
+    }
+
   });
 });
 
 var processData = function(res, status) {
   generateCloud(blah(res.counts));
   $('#summary').html(res.summaries);
-  $('#linkHere').html('<a href="' + res.urls + '">' + $('input').val().trim() + '</a>');
+  $('#linkHere').html('<a href="' + res.urls + '">' + $('.ui.search').search('get value').trim() + '</a>');
 };
 
 var submitQuery = function(e) {
-  var query = $('input').val().trim().replace(' ', '%20');
+  var query = $('.ui.search').search('get value').trim().replace(' ', '%20');
   $.get('/api/v1/wiki/' + query + '/wc', processData)
     .fail(function(error) {
       console.log('We have encountered an error'); // or whatever
