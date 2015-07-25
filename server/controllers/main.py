@@ -56,7 +56,6 @@ def summarize(text):
     return result
 
 @main.route('/')
-@cache.cached(timeout=1000)
 def home():
   return render_template('index.html')
 
