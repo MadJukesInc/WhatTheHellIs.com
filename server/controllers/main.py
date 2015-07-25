@@ -35,15 +35,28 @@ wiki_request_uri = 'https://en.wikipedia.org/w/api.php?' \
     'titles='
 
 def perform_request(search):
-    data = requests.get(wiki_request_uri + search).json()
     content = ''
     urls = ''
-    pages = data['query']['pages']
-    for pageID in pages:
-        query = pages[pageID]
-        content = query['extract']
-        urls = 'https://en.wikipedia.org/?curid=' + str(query['pageid'])
-        return {'content':content, 'url': urls}
+    try:
+        data = requests.get(wiki_request_uri + search).json()
+        pages = data['query']['pages']
+
+        for pageID in pages:
+            query = pages[pageID]
+            try:
+                content = query['extract']
+                urls = 'https://en.wikipedia.org/?curid=' + str(query['pageid'])
+            except KeyError:
+                content = 'No data to parse'
+                print 'No data in extract'
+
+    except requests.exceptions.Timeout:
+        print 'Request Timeout'
+    except requests.exceptions.TooManyRedirects:
+        print 'Too many redirects'
+    except requests.exceptions.RequestException as e:
+        print e
+    return {'content':content, 'url': urls}
 
 def summarize(text):
     parser = PlaintextParser.from_string(text, Tokenizer(LANGUAGE))
@@ -51,8 +64,10 @@ def summarize(text):
     summarizer = Summarizer(stemmer)
     summarizer.stop_words = get_stop_words(LANGUAGE)
     result = ''
+
     for sentence in summarizer(parser.document, SENTENCES_COUNT):
         result += str(sentence) + ' '
+
     return result
 
 @main.route('/')
@@ -89,6 +104,7 @@ def np_counts(search):
 @cross_origin()
 def wiki(search):
   result = perform_request(search)
+
   return jsonify(result)
 
 
