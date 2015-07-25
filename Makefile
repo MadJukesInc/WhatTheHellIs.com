@@ -17,6 +17,8 @@ env:
 deps:
 	@echo " You will need to install libxml2-dev(el) and libxslt-dev(el)"
 	pip install -r requirements.txt
+	python -m nltk.downloader punkt
+	python -m textblob.download_corpora       
 
 clean:
 	python manage.py clean
