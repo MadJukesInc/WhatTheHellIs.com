@@ -15,6 +15,7 @@ env:
 	make deps
 
 deps:
+	@echo " You will need to install libxml2-dev(el) and libxslt-dev(el)"
 	pip install -r requirements.txt
 
 clean:
