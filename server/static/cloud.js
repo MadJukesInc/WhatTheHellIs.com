@@ -47,7 +47,7 @@ var processData = function(res, status) {
 
 var submitQuery = function(e) {
   var query = $('input').val().trim().replace(' ', '%20');
-  $.get('http://127.0.0.1:5000/api/v1/wiki/' + query + '/wc', processData)
+  $.get('/api/v1/wiki/' + query + '/wc', processData)
     .fail(function(error) {
       console.log('We have encountered an error'); // or whatever
     });

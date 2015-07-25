@@ -14,13 +14,6 @@ from server.extensions import cache
 from server.frequency import get_frequencies
 from server.frequency import get_noun_frequencies
 
-static_results = {}
-static_results['thing'] = u'This is the example result'
-static_results['kyle'] = u'The Efficiency Nazi'
-static_results['nikita'] = u'The Git Nazi'
-static_results['jason'] = u'The Organization Nazi'
-static_results['dave'] = u'The Grammar Nazi'
-
 main = Blueprint('main', __name__)
 api_namespace = '/api/v1'
 SENTENCES_COUNT = 3
@@ -34,41 +27,44 @@ wiki_request_uri = 'https://en.wikipedia.org/w/api.php?' \
     'explaintext=&'\
     'titles='
 
+
 def perform_request(search):
-    content = ''
-    urls = ''
-    try:
-        data = requests.get(wiki_request_uri + search).json()
-        pages = data['query']['pages']
+  content = ''
+  urls = ''
+  try:
+    data = requests.get(wiki_request_uri + search).json()
+    pages = data['query']['pages']
 
-        for pageID in pages:
-            query = pages[pageID]
-            try:
-                content = query['extract']
-                urls = 'https://en.wikipedia.org/?curid=' + str(query['pageid'])
-            except KeyError:
-                content = 'No data to parse'
-                print 'No data in extract'
+    for pageID in pages:
+      query = pages[pageID]
+      try:
+        content = query['extract']
+        urls = 'https://en.wikipedia.org/?curid=' + str(query['pageid'])
+      except KeyError:
+        content = 'No data to parse'
+        print 'No data in extract'
 
-    except requests.exceptions.Timeout:
-        print 'Request Timeout'
-    except requests.exceptions.TooManyRedirects:
-        print 'Too many redirects'
-    except requests.exceptions.RequestException as e:
-        print e
-    return {'content':content, 'url': urls}
+  except requests.exceptions.Timeout:
+    print 'Request Timeout'
+  except requests.exceptions.TooManyRedirects:
+    print 'Too many redirects'
+  except requests.exceptions.RequestException as e:
+    print e
+  return {'content': content, 'url': urls}
+
 
 def summarize(text):
-    parser = PlaintextParser.from_string(text, Tokenizer(LANGUAGE))
-    stemmer = Stemmer(LANGUAGE)
-    summarizer = Summarizer(stemmer)
-    summarizer.stop_words = get_stop_words(LANGUAGE)
-    result = ''
+  parser = PlaintextParser.from_string(text, Tokenizer(LANGUAGE))
+  stemmer = Stemmer(LANGUAGE)
+  summarizer = Summarizer(stemmer)
+  summarizer.stop_words = get_stop_words(LANGUAGE)
+  result = ''
 
-    for sentence in summarizer(parser.document, SENTENCES_COUNT):
-        result += str(sentence) + ' '
+  for sentence in summarizer(parser.document, SENTENCES_COUNT):
+    result += str(sentence) + ' '
 
-    return result
+  return result
+
 
 @main.route('/')
 def home():
@@ -116,4 +112,4 @@ def wiki_wc(search):
   summaries = summarize(result['content'])
   counts = get_noun_frequencies(result['content'])
 
-  return jsonify(counts=counts,summaries=summaries,urls=urls)
+  return jsonify(counts=counts, summaries=summaries, urls=urls)
