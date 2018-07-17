@@ -5,7 +5,7 @@
   "main": "manage.py",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "heroku-postbuild": "gulp --gulpfile ./server/static/semantic/gulpfile.js build && bower install && ln -rs ./node_modules ./server/static/"
+    "heroku-postbuild": "gulp build && bower install && ln -rs ./node_modules ./server/static/"
   },
   "repository": {
     "type": "git",
