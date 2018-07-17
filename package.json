@@ -2,10 +2,11 @@
   "name": "whatthehellis",
   "version": "1.0.0",
   "description": "Website with simple description of various terms",
-  "main": "index.html",
+  "main": "manage.py",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "gulp --gulpfile server/static/semantic/gulpfile.js build"
+    "build": "gulp --gulfile semantic/gulpfile.js",
+    "heroku-postbuild": "ln -rs ./node_modules ./server/static/"
   },
   "repository": {
     "type": "git",
@@ -45,7 +46,6 @@
     "gulp-watch": "^4.3.3",
     "map-stream": "0.0.6",
     "require-dot-file": "^0.4.0",
-    "semantic-ui": "^2.0.7",
     "yamljs": "^0.2.3"
   }
 }
